@@ -38,7 +38,9 @@ func New(specificParsers []string) (*Parser, error) {
 	p.availableParsers = map[string]pasteParser{}
 
 	for _, parserKey := range specificParsers {
-		if _, ok := totalParsers[parserKey]; !ok {
+		if _, ok := totalParsers[parserKey]; ok {
+			p.availableParsers[parserKey] = totalParsers[parserKey]
+		} else {
 			return nil, fmt.Errorf("unknown parser type %s", parserKey)
 		}
 	}
