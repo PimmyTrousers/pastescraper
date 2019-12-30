@@ -137,7 +137,7 @@ func (s *Scraper) start(waitDuration time.Duration) error {
 					"key": pasteKey,
 				}).Info("matched a paste")
 
-				err = s.writePaste(pasteKey, pasteContent)
+				err = s.writePaste(matchedSig, pasteKey, pasteContent)
 				if err != nil {
 					s.logger.Warningf("failed to write paste %s: %s", pasteKey, err)
 					continue
@@ -149,12 +149,8 @@ func (s *Scraper) start(waitDuration time.Duration) error {
 	}
 }
 
-func (s *Scraper) writePaste(key string, content []byte) error {
+func (s *Scraper) writePaste(key string, pasteKey string, content []byte) error {
 	if _, err := os.Stat(s.outputDir); os.IsNotExist(err) {
-		if err != nil {
-			return err
-		}
-
 		err = os.Mkdir(s.outputDir, 0755)
 		if err != nil {
 			return err
@@ -176,7 +172,7 @@ func (s *Scraper) writePaste(key string, content []byte) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(time.Now().String(), content, 0644)
+	err = ioutil.WriteFile(pasteKey, content, 0644)
 	if err != nil {
 		return err
 	}

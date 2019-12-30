@@ -34,7 +34,7 @@ func main() {
 		log.Fatalf("failed to initialize scraper: %s", err)
 	}
 
-	err = scraper.start(time.Minute)
+	err = scraper.start(time.Second * 10)
 	if err != nil {
 		log.Fatalf("failed to scrape: %s", err)
 	}
