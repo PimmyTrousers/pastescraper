@@ -48,6 +48,7 @@ func New(specificParsers []string) (*Parser, error) {
 
 func (p *Parser) Match(content []byte) (string, error) {
 	for key, parser := range p.availableParsers {
+		//TODO: doesnt handle things that might match multiple signatures
 		res, err := parser.Match(content)
 		if err != nil {
 			return key, nil
