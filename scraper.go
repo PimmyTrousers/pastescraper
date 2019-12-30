@@ -1,11 +1,12 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"github.com/pimmytrousers/pastescraper/parse"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -23,6 +24,7 @@ type Scraper struct {
 	parser *parse.Parser
 	outputDir string
 	rawUrl string
+	//TODO: implement a FIFO queue to store the keys that we have already seen
 	maxQueue int
 	logger *log.Logger
 	//TODO: use this to make sure you dont process keys you've already seen
@@ -40,8 +42,6 @@ type PasteMetadata struct {
 	Syntax    string `json:"syntax"`
 	User      string `json:"user"`
 }
-
-type PasteStream []PasteMetadata
 
 func (s *Scraper) GetRawPaste(key string) ([]byte, error) {
 		client := http.Client{
@@ -66,14 +66,13 @@ func (s *Scraper) GetRawPaste(key string) ([]byte, error) {
 		return buf, nil
 }
 
-func unmarshalPasteStream(data []byte) (PasteStream, error) {
-	var r PasteStream
+func unmarshalPasteStream(data []byte) ([]PasteMetadata, error) {
+	var r []PasteMetadata
 	err := json.Unmarshal(data, &r)
 	return r, err
 }
 
-func (s *Scraper) getStreamChannel() (<-chan PasteMetadata, error) {
-	out := make(chan PasteMetadata, s.maxQueue)
+func (s *Scraper) getStreamChannel() ([]PasteMetadata, error) {
 	client := http.Client{
 		Timeout:       time.Second * 3,
 	}
@@ -91,21 +90,10 @@ func (s *Scraper) getStreamChannel() (<-chan PasteMetadata, error) {
 
 	stream, err := unmarshalPasteStream(buf)
 
-	//TODO: is this necessary?
-	go func() {
-		for _, pasteMetaData := range stream {
-			out <- pasteMetaData
-		}
-		close(out)
-	}()
-
-	s.logger.Infof("added %d pastes to the queue", s.pastesPerQuery)
-	return out, nil
+	return stream, nil
 }
 
-
-
-func (s *Scraper) start(waitDuration time.Duration) error {
+func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 	for {
 		stream, err := s.getStreamChannel()
 		if err != nil {
@@ -113,7 +101,7 @@ func (s *Scraper) start(waitDuration time.Duration) error {
 		}
 
 		//TODO: go routine this so the matching is done concurrently
-		for pasteMetaData := range stream {
+		for _, pasteMetaData := range stream {
 			pasteKey := pasteMetaData.Key
 			pasteContent, err := s.GetRawPaste(pasteKey)
 			if err != nil {
@@ -130,11 +118,11 @@ func (s *Scraper) start(waitDuration time.Duration) error {
 			if matchedSig != "" {
 				s.logger.WithFields(log.Fields{
 					"signature match": matchedSig,
-					"author": pasteMetaData.User,
-					"size": pasteMetaData.Size,
-					"title": pasteMetaData.Title,
-					"full-url": pasteMetaData.FullURL,
-					"key": pasteKey,
+					"author":          pasteMetaData.User,
+					"size":            pasteMetaData.Size,
+					"title":           pasteMetaData.Title,
+					"full-url":        pasteMetaData.FullURL,
+					"key":             pasteKey,
 				}).Info("matched a paste")
 
 				err = s.writePaste(matchedSig, pasteKey, pasteContent)
@@ -143,6 +131,12 @@ func (s *Scraper) start(waitDuration time.Duration) error {
 					continue
 				}
 			}
+		}
+
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
 		}
 
 		time.Sleep(waitDuration)

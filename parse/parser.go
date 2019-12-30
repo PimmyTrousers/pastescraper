@@ -3,12 +3,13 @@ package parse
 import (
 	"fmt"
 	"github.com/pimmytrousers/pastescraper/parse/individualparsers"
+	"io"
 )
 
 type parserInit func() pasteParser
 
 type pasteParser interface {
-	Match(content []byte) (bool, error)
+	Match(content io.Reader) (bool, error)
 	//TODO: set this so that if we do get a sample is 100% base64 we can write it to disk decoded
 	//Callback() error
 }
@@ -48,12 +49,13 @@ func New(specificParsers []string) (*Parser, error) {
 	return p, nil
 }
 
-func (p *Parser) Match(content []byte) (string, error) {
+func (p *Parser) Match(content io.ReadCloser) (string, error) {
+	defer content.Close()
 	for key, parser := range p.availableParsers {
 		//TODO: doesnt handle things that might match multiple signatures
 		res, err := parser.Match(content)
 		if err != nil {
-			return key, nil
+			return "", err
 		}
 
 		if res {
