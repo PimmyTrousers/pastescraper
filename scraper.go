@@ -157,22 +157,16 @@ func (s *Scraper) writePaste(key string, pasteKey string, content []byte) error 
 		}
 	}
 
-	err := os.Chdir(s.outputDir)
-	if err != nil {
-		return err
+	parseSpecificPath := s.outputDir + "/" + key
+
+	if _, err := os.Stat(parseSpecificPath); os.IsNotExist(err) {
+		err = os.Mkdir(parseSpecificPath, 0755)
+		if err != nil {
+			return err
+		}
 	}
 
-	err = os.Mkdir(key, 0755)
-	if err != nil {
-		return err
-	}
-
-	err = os.Chdir(key)
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile(pasteKey, content, 0644)
+	err := ioutil.WriteFile(parseSpecificPath + "/" + pasteKey, content, 0644)
 	if err != nil {
 		return err
 	}
