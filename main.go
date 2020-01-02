@@ -1,40 +1,41 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/pimmytrousers/pastescraper/parse"
 	log "github.com/sirupsen/logrus"
-	"strings"
 	"time"
 )
 
 var (
-	outputDir string
-	flagParsers string
+	configPath string
 )
 
 func init() {
-	flag.StringVar(&outputDir, "outputdir", "./pastes", "output directory for pastes")
-	flag.StringVar(&flagParsers, "parsers", "", "comma seperated list of parse to be used to saved pastes")
+	flag.StringVar(&configPath, "config", "./exampleconf.yml", "config file for the service")
 }
 
 func main() {
 	flag.Parse()
-	if flagParsers == "" {
-		flag.PrintDefaults()
+
+	c := &config{}
+	err := c.getConf(configPath)
+	if err != nil {
+		log.Fatalf("failed to acquire config: %s", err)
 	}
 
-	parser, err := parse.New(strings.Split(flagParsers, ","))
+	parser, err := parse.New(c.Parsers)
 	if err != nil {
 		log.Fatalf("failed to initialize parser: %s", err)
 	}
 
-	scraper, err := New(20, outputDir, parser)
+	scraper, err := New(c, parser)
 	if err != nil {
 		log.Fatalf("failed to initialize scraper: %s", err)
 	}
 
-	err = scraper.start(time.Second * 10)
+	err = scraper.start(context.Background(), time.Second * 10)
 	if err != nil {
 		log.Fatalf("failed to scrape: %s", err)
 	}

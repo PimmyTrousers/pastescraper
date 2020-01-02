@@ -1,0 +1,11 @@
+outputdir: "./pastes"
+debug: False
+maxqueuesize: 20
+elastic:
+  https: False
+  username: ""
+  password: ""
+  host: ""
+  port: 0
+  index: ""
+parsers: ["base64MZHeader", "base64ELFHeader", "powershellKeyword", "powershellScript", "powershellWebClient", "pythonSyscall", "bashHeader", "vbsInvocation", "powershellFromBase64"]

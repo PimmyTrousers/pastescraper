@@ -3,15 +3,14 @@ package parse
 import (
 	"fmt"
 	"github.com/pimmytrousers/pastescraper/parse/individualparsers"
-	"io"
 )
 
 type parserInit func() pasteParser
 
 type pasteParser interface {
-	Match(content io.Reader) (bool, error)
+	Match(content []byte) (bool, error)
 	//TODO: set this so that if we do get a sample is 100% base64 we can write it to disk decoded
-	//Callback() error
+	//Normalize(content []byte) ([]byte, error)
 }
 
 type Parser struct {
@@ -30,6 +29,7 @@ func init() {
 		"pythonSyscall":       individualparsers.PythonSyscall{},
 		"bashHeader":          individualparsers.BashBang{},
 		"vbsInvocation":       individualparsers.VbsInvocation{},
+		"powershellFromBase64": individualparsers.PowershellFromBase64{},
 	}
 }
 
@@ -49,8 +49,7 @@ func New(specificParsers []string) (*Parser, error) {
 	return p, nil
 }
 
-func (p *Parser) Match(content io.ReadCloser) (string, error) {
-	defer content.Close()
+func (p *Parser) Match(content []byte) (string, error) {
 	for key, parser := range p.availableParsers {
 		//TODO: doesnt handle things that might match multiple signatures
 		res, err := parser.Match(content)
