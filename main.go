@@ -13,7 +13,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "config", "./exampleconf.yml", "config file for the service")
+	flag.StringVar(&configPath, "config", "./example.yml", "config file for the service")
 }
 
 func main() {
