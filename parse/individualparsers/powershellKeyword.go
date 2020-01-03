@@ -14,3 +14,7 @@ func (b PowershellKeyword) Match(content []byte) (bool, error) {
 
 	return false, nil
 }
+
+func (b PowershellKeyword) Normalize(content []byte) ([]byte, error) {
+	return content, nil
+}

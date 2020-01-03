@@ -9,8 +9,7 @@ type parserInit func() pasteParser
 
 type pasteParser interface {
 	Match(content []byte) (bool, error)
-	//TODO: set this so that if we do get a sample is 100% base64 we can write it to disk decoded
-	//Normalize(content []byte) ([]byte, error)
+	Normalize(content []byte) ([]byte, error)
 }
 
 type Parser struct {
@@ -27,7 +26,7 @@ func init() {
 		"powershellScript":    individualparsers.PowershellScript{},
 		"powershellWebClient": individualparsers.PowershellWebClient{},
 		"pythonSyscall":       individualparsers.PythonSyscall{},
-		"bashHeader":          individualparsers.BashBang{},
+		"bashHeader":          individualparsers.BashHeader{},
 		"vbsInvocation":       individualparsers.VbsInvocation{},
 		"powershellFromBase64": individualparsers.PowershellFromBase64{},
 	}
@@ -49,9 +48,9 @@ func New(specificParsers []string) (*Parser, error) {
 	return p, nil
 }
 
-func (p *Parser) Match(content []byte) (string, error) {
+func (p *Parser) match(content []byte) (string, error) {
 	for key, parser := range p.availableParsers {
-		//TODO: doesnt handle things that might match multiple signatures
+		//TODO: doesn't handle things that might match multiple signatures
 		res, err := parser.Match(content)
 		if err != nil {
 			return "", err
@@ -63,6 +62,22 @@ func (p *Parser) Match(content []byte) (string, error) {
 	}
 	return "", nil
 }
+
+func (p *Parser) MatchAndNormalize(content []byte) (string, []byte, error) {
+	key, err := p.match(content)
+	if err != nil {
+		return "", nil, err
+	}
+	if key == "" {
+		return "", nil, nil
+	}
+
+	normalizedContent, err := p.availableParsers[key].Normalize(content)
+
+	return key, normalizedContent, nil
+}
+
+
 
 
 

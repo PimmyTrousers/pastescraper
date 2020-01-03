@@ -14,3 +14,7 @@ func (b VbsInvocation) Match(content []byte) (bool, error) {
 
 	return false, nil
 }
+
+func (b VbsInvocation) Normalize(content []byte) ([]byte, error) {
+	return content, nil
+}

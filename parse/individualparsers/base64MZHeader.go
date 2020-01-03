@@ -1,5 +1,7 @@
 package individualparsers
 
+import "encoding/base64"
+
 type Base64MZHeader struct {}
 
 func (b Base64MZHeader) Match(content []byte) (bool, error) {
@@ -9,4 +11,8 @@ func (b Base64MZHeader) Match(content []byte) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func (b Base64MZHeader) Normalize(content []byte) ([]byte, error) {
+	return base64.StdEncoding.DecodeString(string(content))
 }

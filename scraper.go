@@ -44,7 +44,10 @@ func (s *Scraper) GetRawPaste(key string) ([]byte, error) {
 	}
 
 	if s.debug {
-		s.logger.Debugf("got raw paste for %s", key)
+		s.logger.WithFields(log.Fields{
+			"rawContentsURL":        rawUrlWithKey,
+			"key":                   key,
+		}).Debug("got raw contents of paste")
 	}
 
 	return buf, nil
@@ -75,7 +78,9 @@ func (s *Scraper) getStreamChannel() ([]PasteMetadata, error) {
 	stream, err := unmarshalPasteStream(buf)
 
 	if s.debug {
-		s.logger.Debugf("got %d pastes from the scraping api", s.pastesPerQuery)
+		s.logger.WithFields(log.Fields{
+			"pastesAdded":        s.pastesPerQuery,
+		}).Debug("acquired pastes from pastebin API")
 	}
 
 	return stream, nil
@@ -94,20 +99,41 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 				pasteKey := metadata.Key
 				if s.seenKeys.doesExist(pasteKey) {
 					if s.debug {
-						s.logger.Debugf("already processed %s", pasteKey)
+						s.logger.WithFields(log.Fields{
+							"full-url":        metadata.FullURL,
+							"key":             pasteKey,
+						}).Debug("already parsed paste")
 					}
 					return
 				}
 
 				pasteContent, err := s.GetRawPaste(pasteKey)
 				if err != nil {
-					s.logger.Warning("unable to get raw paste for %s: %s", pasteKey, err)
+					s.logger.WithFields(log.Fields{
+						"full-url":        metadata.FullURL,
+						"key":             pasteKey,
+						"error": 		   err,
+					}).Warning("unable to get raw paste")
 					return
 				}
 
-				matchedSig, err := s.parser.Match(pasteContent)
+				matchedSig, normalizedContent, err := s.parser.MatchAndNormalize(pasteContent)
 				if err != nil {
-					s.logger.Warning("unable to match %s against parsers: %s", pasteKey, err)
+					s.logger.WithFields(log.Fields{
+						"full-url":        metadata.FullURL,
+						"key":             pasteKey,
+						"error": 		   err,
+					}).Warning("unable to match against parsers")
+					return
+				}
+
+				s.seenKeys.add(pasteKey)
+
+				size, err := strconv.Atoi(metadata.Size)
+				if err != nil {
+					s.logger.WithFields(log.Fields{
+						"error": 		   err,
+					}).Warning("invalid size")
 					return
 				}
 
@@ -115,24 +141,32 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 					s.logger.WithFields(log.Fields{
 						"signature match": matchedSig,
 						"author":          metadata.User,
-						"size":            metadata.Size,
+						"size":            size,
 						"title":           metadata.Title,
 						"full-url":        metadata.FullURL,
 						"key":             pasteKey,
 					}).Info("matched a paste")
 
-					err = s.writePaste(matchedSig, pasteKey, pasteContent)
+					err = s.writePaste(matchedSig, pasteKey, normalizedContent)
 					if err != nil {
-						s.logger.Warning("unable to write paste for %s: %s", pasteKey, err)
+						s.logger.WithFields(log.Fields{
+							"full-url":        metadata.FullURL,
+							"key":             pasteKey,
+							"error": 		   err,
+						}).Warning("unable to write paste")
 						return
 					}
 				} else {
 					if s.debug {
-						s.logger.Debugf("no match for %s", pasteKey)
+						s.logger.WithFields(log.Fields{
+							"author":          metadata.User,
+							"size":            size,
+							"title":           metadata.Title,
+							"full-url":        metadata.FullURL,
+							"key":             pasteKey,
+						}).Info("unable to match paste")
 					}
 				}
-
-				s.seenKeys.add(pasteKey)
 			}(pasteMetaData)
 		}
 
@@ -140,10 +174,6 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 		case <-ctx.Done():
 			return ctx.Err()
 		default:
-		}
-
-		if s.debug {
-			s.logger.Debugf("sleeping for %s", waitDuration.String())
 		}
 
 		time.Sleep(waitDuration)
@@ -168,7 +198,10 @@ func (s *Scraper) writePaste(key string, pasteKey string, content []byte) error 
 	}
 
 	if s.debug {
-		s.logger.Debugf("wrote paste contents for %s to disk at location %s", pasteKey, parseSpecificPath + "/" + pasteKey)
+		s.logger.WithFields(log.Fields{
+			"pastekey":                   pasteKey,
+			"paste location":             parseSpecificPath + "/" + pasteKey,
+		}).Debug("wrote paste contents to disk")
 	}
 
 	err := ioutil.WriteFile(parseSpecificPath + "/" + pasteKey, content, 0644)
@@ -185,7 +218,7 @@ func New(c *config, parser *parse.Parser) (*Scraper, error) {
 	s.outputDir = c.OutputDir
 	s.debug = c.Debug
 	s.parser = parser
-	s.seenKeys = newKeyQueue(c.MaxQueueSize)
+	s.seenKeys = newKeyQueue(c.MaxQueueSize * 10)
 	s.maxQueue = c.MaxQueueSize
 	s.scrapingUrl = SCRAPINGURL
 	s.rawUrl = RAWURL
@@ -226,7 +259,9 @@ func New(c *config, parser *parse.Parser) (*Scraper, error) {
 			s.logger.Fatal(err)
 		}
 
-		s.logger.Debugf("successfully connected to elasticsearch at %s", url)
+		s.logger.WithFields(log.Fields{
+			"url":                   url,
+		}).Debug("connected to ELK instance")
 		s.logger.Hooks.Add(hook)
 	}
 

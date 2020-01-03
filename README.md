@@ -23,8 +23,9 @@ scraper, err := New(c, parser)
 // start scraping
 err = scraper.start(context.Background(), time.Second * 10)
 ```
+## Getting Started
 
-The easiest way to get started is to setup a local ELK instance with something like [this](https://github.com/deviantony/docker-elk), and fill in the following information for the configuration file.
+The easiest way to get started is to setup a local ELK instance with something like [this](https://github.com/deviantony/docker-elk), and fill in the following information for the configuration file. Of course, ELK is not required and can be run without. For recommended values, I would set maxqueuesize to 100.
 
 ```yaml
 outputdir: "./pastes"
@@ -42,3 +43,7 @@ parsers: ["base64MZHeader", "base64ELFHeader", "powershellKeyword", "powershellS
 ```
 
 Once the ELK stack is setup and the fields are filled in, running `./pastescraper` should start parsing.
+
+## Screenshots
+
+![Example Dashboard](screenshots/elk1.png)

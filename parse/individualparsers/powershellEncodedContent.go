@@ -14,3 +14,8 @@ func (b PowershellEncodedContent) Match(content []byte) (bool, error) {
 
 	return false, nil
 }
+
+func (b PowershellEncodedContent) Normalize(content []byte) ([]byte, error) {
+	return content, nil
+}
+
