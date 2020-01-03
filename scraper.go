@@ -76,10 +76,12 @@ func (s *Scraper) getStreamChannel() ([]PasteMetadata, error) {
 	}
 
 	stream, err := unmarshalPasteStream(buf)
-
+	if len(stream) == 0 {
+		return nil, errors.New("unable to acquire a paste stream - most likely due to unwhitelisted IP")
+	}
 	if s.debug {
 		s.logger.WithFields(log.Fields{
-			"pastesAdded":        s.pastesPerQuery,
+			"pastesAdded":        len(stream),
 		}).Debug("acquired pastes from pastebin API")
 	}
 
