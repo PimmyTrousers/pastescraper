@@ -51,13 +51,13 @@ docker build -t pastescrape:latest .
 And starting the service with the newly created config file.
 
 ```bash
-docker run -v ${PWD}/myconf.yml:/app/config.yml pastescrape:latest
+docker run -v ${PWD}/config.yml:/app/config.yml pastescrape:latest
 ```
 
 If you want to preserve the downloaded pastes
 
 ```bash
-docker run -v ${PWD}/pastes:/app/pastes -v ${PWD}/myconf.yml:/app/config.yml pastescrape:latest
+docker run -v ${PWD}/pastes:/app/pastes -v ${PWD}/config.yml:/app/config.yml pastescrape:latest
 ```
 
 The config file does support logging to an elasticsearch instance, so if that is configured those values can be filled in.
