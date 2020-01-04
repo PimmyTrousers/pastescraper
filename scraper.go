@@ -109,10 +109,11 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 			time.Sleep(time.Second * 3)
 		}
 
-		if stream != nil {
+		if stream == nil {
 			s.logger.WithFields(log.Fields{
 				"error": 		   err,
 			}).Warning("unable to get paste stream")
+			return errors.New("invalid stream")
 		}
 
 		for _, pasteMetaData := range stream {

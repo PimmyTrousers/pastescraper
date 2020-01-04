@@ -5,11 +5,17 @@ import (
 	"io/ioutil"
 )
 
-func (c *config) getConf(path string) error {
+func getConf(path string) (*config, error) {
+	c := &config{}
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return yaml.Unmarshal(buf, c)
+	err = yaml.Unmarshal(buf, c)
+	if err != nil {
+		return nil, err
+	}
+
+	return c, nil
 }

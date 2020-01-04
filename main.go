@@ -19,8 +19,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	c := &config{}
-	err := c.getConf(configPath)
+	c, err := getConf(configPath)
 	if err != nil {
 		log.Fatalf("failed to acquire config: %s", err)
 	}
