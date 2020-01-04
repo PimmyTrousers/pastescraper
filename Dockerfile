@@ -5,10 +5,6 @@ WORKDIR /build
 RUN go build -o pastescrape .
 
 FROM alpine
-
-RUN adduser -S -D -H -h /app appuser
-USER appuser
-
 COPY --from=builder /build/pastescrape /app/
 
 WORKDIR /app
