@@ -79,6 +79,7 @@ func (s *Scraper) getStreamChannel() ([]PasteMetadata, error) {
 	if len(stream) == 0 {
 		return nil, errors.New("unable to acquire a paste stream - most likely due to unwhitelisted IP")
 	}
+
 	if s.debug {
 		s.logger.WithFields(log.Fields{
 			"pastesAdded":        len(stream),
@@ -90,9 +91,28 @@ func (s *Scraper) getStreamChannel() ([]PasteMetadata, error) {
 
 func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 	for {
-		stream, err := s.getStreamChannel()
-		if err != nil {
-			return err
+
+		var stream []PasteMetadata
+		var err error
+		for i := 0; i < 5; i++ {
+			stream, err = s.getStreamChannel()
+			if err != nil {
+				s.logger.WithFields(log.Fields{
+					"error": 		   err,
+				}).Warning("unable to get paste stream, trying again")
+			}
+
+			if stream != nil {
+				break
+			}
+
+			time.Sleep(time.Second * 3)
+		}
+
+		if stream != nil {
+			s.logger.WithFields(log.Fields{
+				"error": 		   err,
+			}).Warning("unable to get paste stream")
 		}
 
 		for _, pasteMetaData := range stream {
