@@ -1,14 +1,14 @@
 package individualparsers
 
 import (
-	"bytes"
+	"strings"
 )
 
 type PowershellKeyword struct {}
 
 func (b PowershellKeyword) Match(content []byte) (bool, error) {
 	// powershell contained within paste
-	if bytes.Contains(content, []byte("powershell")) {
+	if strings.Contains(strings.ToLower(string(content)), "powershell") {
 		return true, nil
 	}
 

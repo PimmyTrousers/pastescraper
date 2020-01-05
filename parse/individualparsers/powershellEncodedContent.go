@@ -1,14 +1,17 @@
 package individualparsers
 
 import (
-	"bytes"
+	"strings"
 )
 
 type PowershellEncodedContent struct {}
 
 func (b PowershellEncodedContent) Match(content []byte) (bool, error) {
 	// powershell.exe -nop -wind hidden -Exec Bypass -noni -enc
-	if bytes.Contains(content, []byte("-nop")) && bytes.Contains(content, []byte("-Exec Bypass")) && bytes.Contains(content, []byte("-Exec Bypass")) && bytes.Contains(content, []byte("-enc")) {
+	if strings.Contains(strings.ToLower(string(content)), "-nop") &&
+		strings.Contains(strings.ToLower(string(content)), "-exec bypass") &&
+		strings.Contains(strings.ToLower(string(content)), "-exec Bypass") &&
+		strings.Contains(strings.ToLower(string(content)), "-enc") {
 		return true, nil
 	}
 

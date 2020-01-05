@@ -1,14 +1,14 @@
 package individualparsers
 
 import (
-	"bytes"
+	"strings"
 )
 
 type PowershellScript struct {}
 
 func (b PowershellScript) Match(content []byte) (bool, error) {
 	// powershell invocation
-	if bytes.Contains(content, []byte("Invoke-")) {
+	if strings.Contains(strings.ToLower(string(content)), "invoke-") {
 		return true, nil
 	}
 

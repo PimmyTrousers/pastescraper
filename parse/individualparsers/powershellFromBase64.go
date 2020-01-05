@@ -1,14 +1,14 @@
 package individualparsers
 
 import (
-	"bytes"
+	"strings"
 )
 
 type PowershellFromBase64 struct {}
 
 func (b PowershellFromBase64) Match(content []byte) (bool, error) {
 	// powershell contained within paste
-	if bytes.Contains(content, []byte("FromBase64String")) {
+	if strings.Contains(strings.ToLower(string(content)), "frombase64string") {
 		return true, nil
 	}
 

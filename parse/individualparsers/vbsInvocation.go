@@ -1,14 +1,14 @@
 package individualparsers
 
 import (
-	"bytes"
+	"strings"
 )
 
 type VbsInvocation struct {}
 
 func (b VbsInvocation) Match(content []byte) (bool, error) {
 	// visual basic shell invocation
-	if bytes.Contains(content, []byte("wscript.shell")) {
+	if strings.Contains(strings.ToLower(string(content)), "wscript.shell") {
 		return true, nil
 	}
 

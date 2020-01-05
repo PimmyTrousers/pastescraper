@@ -2,13 +2,14 @@ package individualparsers
 
 import (
 	"bytes"
+	"strings"
 )
 
 type PowershellWebClient struct {}
 
 func (b PowershellWebClient) Match(content []byte) (bool, error) {
 	// powershell well client
-	if bytes.Contains(content, []byte("Net.WebClient")) {
+	if strings.Contains(strings.ToLower(string(content)), "net.webclient") {
 		return true, nil
 	}
 

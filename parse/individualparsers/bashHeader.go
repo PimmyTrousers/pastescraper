@@ -1,10 +1,12 @@
 package individualparsers
 
+import "strings"
+
 type BashHeader struct {}
 
 func (b BashHeader) Match(content []byte) (bool, error) {
 	// bash header
-	if string(content[:11]) == "#!/bin/bash" {
+	if strings.ToLower(string(content[:11])) == "#!/bin/bash" {
 		return true, nil
 	}
 
