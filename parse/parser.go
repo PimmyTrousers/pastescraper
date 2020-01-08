@@ -5,8 +5,6 @@ import (
 	"github.com/pimmytrousers/pastescraper/parse/individualparsers"
 )
 
-type parserInit func() pasteParser
-
 type pasteParser interface {
 	Match(content []byte) (bool, error)
 	Normalize(content []byte) ([]byte, error)
