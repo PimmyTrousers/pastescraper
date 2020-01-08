@@ -29,6 +29,9 @@ func init() {
 		"bashHeader":          individualparsers.BashHeader{},
 		"vbsInvocation":       individualparsers.VbsInvocation{},
 		"powershellFromBase64": individualparsers.PowershellFromBase64{},
+		"rawMZHeader": 			individualparsers.Raw64MZHeader{},
+		"rawMachOHeader":		individualparsers.RawMachOHeader{},
+
 	}
 }
 
