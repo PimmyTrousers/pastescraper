@@ -1,7 +1,6 @@
 package individualparsers
 
 import (
-	"bytes"
 	"strings"
 )
 
