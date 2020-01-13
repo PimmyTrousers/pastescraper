@@ -29,6 +29,7 @@ func init() {
 		"powershellFromBase64": individualparsers.PowershellFromBase64{},
 		"rawMZHeader": 			individualparsers.Raw64MZHeader{},
 		"rawMachOHeader":		individualparsers.RawMachOHeader{},
+		"largeHexBlob":			individualparsers.LargeHexBlob{},
 
 	}
 }

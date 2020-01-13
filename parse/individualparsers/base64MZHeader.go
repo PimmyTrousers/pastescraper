@@ -6,7 +6,8 @@ type Base64MZHeader struct {}
 
 func (b Base64MZHeader) Match(content []byte) (bool, error) {
 	// PE header base64 encoded
-	if string(content[:4]) == "TVpQ" {
+	headerContents := string(content[:4])
+	if headerContents == "TVpQ" || headerContents == "TVoA" || headerContents == "TVpB" || headerContents == "TVqA" || headerContents == "TVqQ" || headerContents == "TVro" {
 		return true, nil
 	}
 
