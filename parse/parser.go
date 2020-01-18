@@ -80,6 +80,9 @@ func (p *Parser) MatchAndNormalize(content []byte) (string, []byte, error) {
 	}
 
 	normalizedContent, err := p.availableParsers[key].Normalize(content)
+	if err != nil {
+		return "", nil, err
+	}
 
 	return key, normalizedContent, nil
 }

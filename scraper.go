@@ -74,6 +74,10 @@ func (s *Scraper) getStreamChannel() ([]PasteMetadata, error) {
 	}
 
 	stream, err := unmarshalPasteStream(buf)
+	if err != nil {
+		return nil, err
+	}
+
 	if len(stream) == 0 {
 		return nil, errors.New("unable to acquire a paste stream - most likely due to unwhitelisted IP")
 	}
