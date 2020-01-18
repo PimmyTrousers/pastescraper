@@ -11,7 +11,7 @@ func (b Base64HighEntropy) Match(content []byte) (bool, error) {
 	// PE header base64 encoded
 	base64DecodedContent, err := base64.StdEncoding.DecodeString(string(content))
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 
 	entropy, err := entropy(bytes.NewReader(base64DecodedContent))
