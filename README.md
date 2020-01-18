@@ -33,7 +33,7 @@ The easiest way to test the service itself is to create the following config fil
 ```yaml
 outputdir: "./pastes"
 debug: False
-maxqueuesize: 20
+maxqueuesize: 100
 elastic:
   https: False
   username: ""
