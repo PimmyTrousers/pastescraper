@@ -8,4 +8,4 @@ elastic:
   host: ""
   port: 0
   index: ""
-parsers: ["base64MZHeader", "base64ELFHeader", "powershellKeyword", "powershellScript", "powershellWebClient", "pythonSyscall", "bashHeader", "vbsInvocation", "powershellFromBase64", "rawMZHeader", "rawMachOHeader", "largeHexBlob"]
+parsers: ["powershellFromBase64", "powershellWebClient", "vbsInvocation", "powershellScript", "powershellKeyword", "pythonSyscall", "bashHeader", "base64MZHeader", "base64ELFHeader", "rawMZHeader", "rawMachOHeader", "reverseBase64MZHeader", "reverseBase64ELFHeader", "largeHexBlob", "base64HighEntropy"]

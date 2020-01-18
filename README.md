@@ -1,5 +1,7 @@
 # pastescraper
 
+![Example Dashboard](screenshots/elk1.png)
+
 A utility to scrape pastebin's incoming feed for known malware techniques.
 
 You must have your ip whitelisted with pastebin for this to work.
@@ -26,7 +28,7 @@ err = scraper.start(context.Background(), time.Second * 10)
 ## Getting Started
 
 ### Standalone Docker Container
-The easiest way to test the service itself is to create the following config file named `config.yml`
+The easiest way to test the service itself is to create the following config file named `config.yml`. The parsers now run in order, so if there is something you are specifically trying to target put those parsers at the beginning. Items at the end of the array should be your catch all such as large hex blobs
 
 ```yaml
 outputdir: "./pastes"
@@ -39,8 +41,7 @@ elastic:
   host: ""
   port: 0
   index: ""
-parsers: ["base64MZHeader", "base64ELFHeader", "powershellKeyword", "powershellScript", "powershellWebClient", "pythonSyscall", "bashHeader", "vbsInvocation", "powershellFromBase64"]
-
+parsers: ["powershellFromBase64", "powershellWebClient", "vbsInvocation", "powershellScript", "powershellKeyword", "pythonSyscall", "bashHeader", "base64MZHeader", "base64ELFHeader", "rawMZHeader", "rawMachOHeader", "reverseBase64MZHeader", "reverseBase64ELFHeader", "largeHexBlob", "base64HighEntropy"]
 ```
 
 Then creating the docker container with
@@ -64,4 +65,3 @@ The config file does support logging to an elasticsearch instance, so if that is
 
 ## Screenshots
 
-![Example Dashboard](screenshots/elk1.png)
