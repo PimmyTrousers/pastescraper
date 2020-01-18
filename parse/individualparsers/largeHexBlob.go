@@ -4,8 +4,7 @@ import (
 	"regexp"
 )
 
-type LargeHexBlob struct {}
-
+type LargeHexBlob struct{}
 
 func (b LargeHexBlob) Match(content []byte) (bool, error) {
 	// large hex blobs 2A564D5A.....
@@ -21,4 +20,3 @@ func (b LargeHexBlob) Match(content []byte) (bool, error) {
 func (b LargeHexBlob) Normalize(content []byte) ([]byte, error) {
 	return content, nil
 }
-

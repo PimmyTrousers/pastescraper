@@ -4,7 +4,7 @@ import (
 	"bytes"
 )
 
-type PythonSyscall struct {}
+type PythonSyscall struct{}
 
 func (b PythonSyscall) Match(content []byte) (bool, error) {
 	// python syscall

@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type PowershellKeyword struct {}
+type PowershellKeyword struct{}
 
 func (b PowershellKeyword) Match(content []byte) (bool, error) {
 	// powershell contained within paste

@@ -3,14 +3,14 @@ package main
 import "sync"
 
 type keyQueue struct {
-	keys	[]string
+	keys    []string
 	maxSize int
 	sync.Mutex
 }
 
 func newKeyQueue(size int) *keyQueue {
 	return &keyQueue{
-		keys: []string{},
+		keys:    []string{},
 		maxSize: size,
 	}
 }

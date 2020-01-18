@@ -2,7 +2,7 @@ package individualparsers
 
 import "bytes"
 
-type RawMachOHeader struct {}
+type RawMachOHeader struct{}
 
 func (b RawMachOHeader) Match(content []byte) (bool, error) {
 	// Raw Mach O header
@@ -20,4 +20,3 @@ func (b RawMachOHeader) Match(content []byte) (bool, error) {
 func (b RawMachOHeader) Normalize(content []byte) ([]byte, error) {
 	return content, nil
 }
-

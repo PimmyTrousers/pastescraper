@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 )
 
-type Base64HighEntropy struct {}
+type Base64HighEntropy struct{}
 
 func (b Base64HighEntropy) Match(content []byte) (bool, error) {
 	// PE header base64 encoded
@@ -23,12 +23,9 @@ func (b Base64HighEntropy) Match(content []byte) (bool, error) {
 		return true, nil
 	}
 
-
-
 	return false, nil
 }
 
 func (b Base64HighEntropy) Normalize(content []byte) ([]byte, error) {
 	return content, nil
 }
-

@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type PowershellScript struct {}
+type PowershellScript struct{}
 
 func (b PowershellScript) Match(content []byte) (bool, error) {
 	// powershell invocation

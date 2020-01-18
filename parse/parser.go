@@ -2,6 +2,7 @@ package parse
 
 import (
 	"fmt"
+
 	"github.com/pimmytrousers/pastescraper/parse/individualparsers"
 )
 
@@ -12,28 +13,28 @@ type pasteParser interface {
 
 type Parser struct {
 	availableParsers map[string]pasteParser
-	orderedKeys []string
+	orderedKeys      []string
 }
 
 var totalParsers map[string]pasteParser
 
 func init() {
 	totalParsers = map[string]pasteParser{
-		"base64MZHeader":       	individualparsers.Base64MZHeader{},
-		"base64ELFHeader":      	individualparsers.Base64ELFHeader{},
-		"powershellKeyword":   		individualparsers.PowershellKeyword{},
-		"powershellScript":     	individualparsers.PowershellScript{},
-		"powershellWebClient":  	individualparsers.PowershellWebClient{},
-		"pythonSyscall":        	individualparsers.PythonSyscall{},
-		"bashHeader":           	individualparsers.BashHeader{},
-		"vbsInvocation":        	individualparsers.VbsInvocation{},
-		"powershellFromBase64": 	individualparsers.PowershellFromBase64{},
-		"rawMZHeader": 				individualparsers.Raw64MZHeader{},
-		"rawMachOHeader":			individualparsers.RawMachOHeader{},
-		"largeHexBlob":				individualparsers.LargeHexBlob{},
-		"base64HighEntropy":		individualparsers.Base64HighEntropy{},
-		"reverseBase64MZHeader": 	individualparsers.ReverseBase64MZHeader{},
-		"reverseBase64ELFHeader":	individualparsers.ReverseBase64ELFHeader{},
+		"base64MZHeader":         individualparsers.Base64MZHeader{},
+		"base64ELFHeader":        individualparsers.Base64ELFHeader{},
+		"powershellKeyword":      individualparsers.PowershellKeyword{},
+		"powershellScript":       individualparsers.PowershellScript{},
+		"powershellWebClient":    individualparsers.PowershellWebClient{},
+		"pythonSyscall":          individualparsers.PythonSyscall{},
+		"bashHeader":             individualparsers.BashHeader{},
+		"vbsInvocation":          individualparsers.VbsInvocation{},
+		"powershellFromBase64":   individualparsers.PowershellFromBase64{},
+		"rawMZHeader":            individualparsers.Raw64MZHeader{},
+		"rawMachOHeader":         individualparsers.RawMachOHeader{},
+		"largeHexBlob":           individualparsers.LargeHexBlob{},
+		"base64HighEntropy":      individualparsers.Base64HighEntropy{},
+		"reverseBase64MZHeader":  individualparsers.ReverseBase64MZHeader{},
+		"reverseBase64ELFHeader": individualparsers.ReverseBase64ELFHeader{},
 	}
 }
 
@@ -82,8 +83,3 @@ func (p *Parser) MatchAndNormalize(content []byte) (string, []byte, error) {
 
 	return key, normalizedContent, nil
 }
-
-
-
-
-

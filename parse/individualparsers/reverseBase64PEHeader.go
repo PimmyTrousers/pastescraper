@@ -2,7 +2,7 @@ package individualparsers
 
 import "encoding/base64"
 
-type ReverseBase64MZHeader struct {}
+type ReverseBase64MZHeader struct{}
 
 func (b ReverseBase64MZHeader) Match(content []byte) (bool, error) {
 	// PE header base64 encoded
@@ -24,6 +24,3 @@ func (b ReverseBase64MZHeader) Normalize(content []byte) ([]byte, error) {
 	normalizedContent := reverse(string(content))
 	return base64.StdEncoding.DecodeString(normalizedContent)
 }
-
-
-

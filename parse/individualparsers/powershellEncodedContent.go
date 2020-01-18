@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type PowershellEncodedContent struct {}
+type PowershellEncodedContent struct{}
 
 func (b PowershellEncodedContent) Match(content []byte) (bool, error) {
 	// powershell.exe -nop -wind hidden -Exec Bypass -noni -enc
@@ -20,4 +20,3 @@ func (b PowershellEncodedContent) Match(content []byte) (bool, error) {
 func (b PowershellEncodedContent) Normalize(content []byte) ([]byte, error) {
 	return content, nil
 }
-

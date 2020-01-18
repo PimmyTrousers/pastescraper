@@ -2,7 +2,7 @@ package individualparsers
 
 import "encoding/base64"
 
-type Base64ELFHeader struct {}
+type Base64ELFHeader struct{}
 
 func (b Base64ELFHeader) Match(content []byte) (bool, error) {
 	// ELF header base64 encoded

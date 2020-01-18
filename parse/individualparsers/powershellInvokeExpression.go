@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type PowershellInvokeExpression struct {}
+type PowershellInvokeExpression struct{}
 
 func (b PowershellInvokeExpression) Match(content []byte) (bool, error) {
 	// powershell invoke expression used to execute certain commands in PS

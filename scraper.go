@@ -18,20 +18,18 @@ import (
 
 const (
 	SCRAPINGURL = "https://scrape.pastebin.com/api_scraping.php?limit=%d"
-	RAWURL = "https://scrape.pastebin.com/api_scrape_item.php?i=%s"
+	RAWURL      = "https://scrape.pastebin.com/api_scrape_item.php?i=%s"
 )
-
-
 
 func (s *Scraper) GetRawPaste(key string) ([]byte, error) {
 	client := http.Client{
-		Timeout:       time.Second * 3,
+		Timeout: time.Second * 3,
 	}
 
 	rawUrlWithKey := fmt.Sprintf(s.rawUrl, key)
 	resp, err := client.Get(rawUrlWithKey)
 	if err != nil {
-		return nil ,err
+		return nil, err
 	}
 
 	buf, err := ioutil.ReadAll(resp.Body)
@@ -45,8 +43,8 @@ func (s *Scraper) GetRawPaste(key string) ([]byte, error) {
 
 	if s.debug {
 		s.logger.WithFields(log.Fields{
-			"rawContentsURL":        rawUrlWithKey,
-			"key":                   key,
+			"rawContentsURL": rawUrlWithKey,
+			"key":            key,
 		}).Debug("got raw contents of paste")
 	}
 
@@ -61,7 +59,7 @@ func unmarshalPasteStream(data []byte) ([]PasteMetadata, error) {
 
 func (s *Scraper) getStreamChannel() ([]PasteMetadata, error) {
 	client := http.Client{
-		Timeout:       time.Second * 3,
+		Timeout: time.Second * 3,
 	}
 
 	resp, err := client.Get(fmt.Sprintf(s.scrapingUrl, s.pastesPerQuery))
@@ -82,7 +80,7 @@ func (s *Scraper) getStreamChannel() ([]PasteMetadata, error) {
 
 	if s.debug {
 		s.logger.WithFields(log.Fields{
-			"pastesAdded":        len(stream),
+			"pastesAdded": len(stream),
 		}).Debug("acquired pastes from pastebin API")
 	}
 
@@ -98,7 +96,7 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 			stream, err = s.getStreamChannel()
 			if err != nil {
 				s.logger.WithFields(log.Fields{
-					"error": 		   err,
+					"error": err,
 				}).Warning("unable to get paste stream, trying again")
 			}
 
@@ -111,7 +109,7 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 
 		if stream == nil {
 			s.logger.WithFields(log.Fields{
-				"error": 		   err,
+				"error": err,
 			}).Warning("unable to get paste stream")
 			return errors.New("invalid stream")
 		}
@@ -123,8 +121,8 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 				if s.seenKeys.doesExist(pasteKey) {
 					if s.debug {
 						s.logger.WithFields(log.Fields{
-							"full-url":        metadata.FullURL,
-							"key":             pasteKey,
+							"full-url": metadata.FullURL,
+							"key":      pasteKey,
 						}).Debug("already parsed paste")
 					}
 					return
@@ -133,9 +131,9 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 				pasteContent, err := s.GetRawPaste(pasteKey)
 				if err != nil {
 					s.logger.WithFields(log.Fields{
-						"full-url":        metadata.FullURL,
-						"key":             pasteKey,
-						"error": 		   err,
+						"full-url": metadata.FullURL,
+						"key":      pasteKey,
+						"error":    err,
 					}).Warning("unable to get raw paste")
 					return
 				}
@@ -143,9 +141,9 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 				matchedSig, normalizedContent, err := s.parser.MatchAndNormalize(pasteContent)
 				if err != nil {
 					s.logger.WithFields(log.Fields{
-						"full-url":        metadata.FullURL,
-						"key":             pasteKey,
-						"error": 		   err,
+						"full-url": metadata.FullURL,
+						"key":      pasteKey,
+						"error":    err,
 					}).Warning("unable to match against parsers")
 					return
 				}
@@ -155,7 +153,7 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 				size, err := strconv.Atoi(metadata.Size)
 				if err != nil {
 					s.logger.WithFields(log.Fields{
-						"error": 		   err,
+						"error": err,
 					}).Warning("invalid size")
 					return
 				}
@@ -173,20 +171,20 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 					err = s.writePaste(matchedSig, pasteKey, normalizedContent)
 					if err != nil {
 						s.logger.WithFields(log.Fields{
-							"full-url":        metadata.FullURL,
-							"key":             pasteKey,
-							"error": 		   err,
+							"full-url": metadata.FullURL,
+							"key":      pasteKey,
+							"error":    err,
 						}).Warning("unable to write paste")
 						return
 					}
 				} else {
 					if s.debug {
 						s.logger.WithFields(log.Fields{
-							"author":          metadata.User,
-							"size":            size,
-							"title":           metadata.Title,
-							"full-url":        metadata.FullURL,
-							"key":             pasteKey,
+							"author":   metadata.User,
+							"size":     size,
+							"title":    metadata.Title,
+							"full-url": metadata.FullURL,
+							"key":      pasteKey,
 						}).Info("unable to match paste")
 					}
 				}
@@ -222,12 +220,12 @@ func (s *Scraper) writePaste(key string, pasteKey string, content []byte) error 
 
 	if s.debug {
 		s.logger.WithFields(log.Fields{
-			"pastekey":                   pasteKey,
-			"paste location":             parseSpecificPath + "/" + pasteKey,
+			"pastekey":       pasteKey,
+			"paste location": parseSpecificPath + "/" + pasteKey,
 		}).Debug("wrote paste contents to disk")
 	}
 
-	err := ioutil.WriteFile(parseSpecificPath + "/" + pasteKey, content, 0644)
+	err := ioutil.WriteFile(parseSpecificPath+"/"+pasteKey, content, 0644)
 	if err != nil {
 		return err
 	}
@@ -276,14 +274,13 @@ func New(c *config, parser *parse.Parser) (*Scraper, error) {
 			s.logger.Fatal(err)
 		}
 
-
 		hook, err := elogrus.NewAsyncElasticHook(client, c.Elastic.Host, log.DebugLevel, c.Elastic.Index)
 		if err != nil {
 			s.logger.Fatal(err)
 		}
 
 		s.logger.WithFields(log.Fields{
-			"url":                   url,
+			"url": url,
 		}).Debug("connected to ELK instance")
 		s.logger.Hooks.Add(hook)
 	}

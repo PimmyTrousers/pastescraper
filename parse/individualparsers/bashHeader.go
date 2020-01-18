@@ -2,7 +2,7 @@ package individualparsers
 
 import "strings"
 
-type BashHeader struct {}
+type BashHeader struct{}
 
 func (b BashHeader) Match(content []byte) (bool, error) {
 	// bash header

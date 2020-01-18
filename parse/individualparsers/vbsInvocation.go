@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type VbsInvocation struct {}
+type VbsInvocation struct{}
 
 func (b VbsInvocation) Match(content []byte) (bool, error) {
 	// visual basic shell invocation

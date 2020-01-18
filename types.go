@@ -6,32 +6,32 @@ import (
 )
 
 type Scraper struct {
-	scrapingUrl string
+	scrapingUrl    string
 	pastesPerQuery int
-	parser *parse.Parser
-	outputDir string
-	rawUrl string
-	debug bool
-	maxQueue int
-	logger *log.Logger
-	seenKeys *keyQueue
+	parser         *parse.Parser
+	outputDir      string
+	rawUrl         string
+	debug          bool
+	maxQueue       int
+	logger         *log.Logger
+	seenKeys       *keyQueue
 }
 
 type Elastic struct {
-	HTTPS bool `yaml:"https"`
+	HTTPS    bool   `yaml:"https"`
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
-	Host string `yaml:"host"`
-	Port int `yaml:"port"`
-	Index string `yaml:"index"`
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Index    string `yaml:"index"`
 }
 
 type config struct {
-	OutputDir string `yaml:"outputdir"`
-	Debug bool `yaml:"debug"`
-	MaxQueueSize int `yaml:"maxqueuesize"`
-	Elastic Elastic `yaml:"elastic"`
-	Parsers []string `yaml:"parsers"`
+	OutputDir    string   `yaml:"outputdir"`
+	Debug        bool     `yaml:"debug"`
+	MaxQueueSize int      `yaml:"maxqueuesize"`
+	Elastic      Elastic  `yaml:"elastic"`
+	Parsers      []string `yaml:"parsers"`
 }
 
 type PasteMetadata struct {

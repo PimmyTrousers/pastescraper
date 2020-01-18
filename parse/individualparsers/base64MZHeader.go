@@ -2,7 +2,7 @@ package individualparsers
 
 import "encoding/base64"
 
-type Base64MZHeader struct {}
+type Base64MZHeader struct{}
 
 func (b Base64MZHeader) Match(content []byte) (bool, error) {
 	// PE header base64 encoded

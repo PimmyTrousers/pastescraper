@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type PowershellFromBase64 struct {}
+type PowershellFromBase64 struct{}
 
 func (b PowershellFromBase64) Match(content []byte) (bool, error) {
 	// powershell contained within paste
@@ -18,4 +18,3 @@ func (b PowershellFromBase64) Match(content []byte) (bool, error) {
 func (b PowershellFromBase64) Normalize(content []byte) ([]byte, error) {
 	return content, nil
 }
-

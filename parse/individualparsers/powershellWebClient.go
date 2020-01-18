@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type PowershellWebClient struct {}
+type PowershellWebClient struct{}
 
 func (b PowershellWebClient) Match(content []byte) (bool, error) {
 	// powershell well client
