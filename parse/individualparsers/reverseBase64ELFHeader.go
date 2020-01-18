@@ -7,6 +7,10 @@ type ReverseBase64ELFHeader struct {}
 func (b ReverseBase64ELFHeader) Match(content []byte) (bool, error) {
 	// ELF header base64 encoded
 	reversedContent := reverse(string(content))
+	if len(reversedContent) < 5 {
+		return false, nil
+	}
+
 	if reversedContent[:5] == "f0VMR" {
 		return true, nil
 	}
@@ -16,5 +20,5 @@ func (b ReverseBase64ELFHeader) Match(content []byte) (bool, error) {
 
 func (b ReverseBase64ELFHeader) Normalize(content []byte) ([]byte, error) {
 	reversedContent := reverse(string(content))
-	return base64.StdEncoding.DecodeString(string(reversedContent))
+	return base64.StdEncoding.DecodeString(reversedContent)
 }
