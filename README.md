@@ -63,5 +63,4 @@ docker run -v ${PWD}/pastes:/app/pastes -v ${PWD}/config.yml:/app/config.yml pas
 
 The config file does support logging to an elasticsearch instance, so if that is configured those values can be filled in.
 
-## Screenshots
 
