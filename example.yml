@@ -1,6 +1,6 @@
 outputdir: "./pastes"
 debug: False
-maxqueuesize: 20
+maxqueuesize: 100
 elastic:
   https: False
   username: ""
