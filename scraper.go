@@ -352,7 +352,6 @@ func (s *Scraper) postActionExec(action int, content []byte) (string, error) {
 		s.logger.WithFields(log.Fields{
 			"filename":     filename.String(),
 			"positives":    report.Positives,
-			"scan results": report.Scans,
 			"url":          report.Permalink,
 			"MD5":          report.Md5,
 			"SHA1":         report.Sha1,
