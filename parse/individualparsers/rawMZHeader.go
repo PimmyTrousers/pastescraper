@@ -1,6 +1,8 @@
 package individualparsers
 
-import "bytes"
+import (
+	"bytes"
+)
 
 type Raw64MZHeader struct{}
 
@@ -17,6 +19,6 @@ func (b Raw64MZHeader) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b Raw64MZHeader) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b Raw64MZHeader) Normalize(content []byte) (int, []byte, error) {
+	return KeyRawExecutable, content, nil
 }

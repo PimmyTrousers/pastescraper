@@ -8,7 +8,8 @@ import (
 
 type pasteParser interface {
 	Match(content []byte) (bool, error)
-	Normalize(content []byte) ([]byte, error)
+	// Normalize will perform operations on the data if necessary
+	Normalize(content []byte) (int, []byte, error)
 }
 
 type Parser struct {
@@ -70,19 +71,19 @@ func (p *Parser) match(content []byte) (string, error) {
 	return "", nil
 }
 
-func (p *Parser) MatchAndNormalize(content []byte) (string, []byte, error) {
+func (p *Parser) MatchAndNormalize(content []byte) (string, int, []byte, error) {
 	key, err := p.match(content)
 	if err != nil {
-		return "", nil, err
+		return "", 0, nil, err
 	}
 	if key == "" {
-		return "", nil, nil
+		return "", 0, nil, nil
 	}
 
-	normalizedContent, err := p.availableParsers[key].Normalize(content)
+	action, normalizedContent, err := p.availableParsers[key].Normalize(content)
 	if err != nil {
-		return "", nil, err
+		return "", 0, nil, err
 	}
 
-	return key, normalizedContent, nil
+	return key, action, normalizedContent, nil
 }

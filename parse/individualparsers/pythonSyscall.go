@@ -15,6 +15,6 @@ func (b PythonSyscall) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b PythonSyscall) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b PythonSyscall) Normalize(content []byte) (int, []byte, error) {
+	return KeyNonActionable, content, nil
 }

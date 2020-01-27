@@ -26,6 +26,6 @@ func (b Base64HighEntropy) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b Base64HighEntropy) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b Base64HighEntropy) Normalize(content []byte) (int, []byte, error) {
+	return KeyNonActionable, content, nil
 }

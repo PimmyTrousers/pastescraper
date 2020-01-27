@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/pimmytrousers/pastescraper/parse"
 	log "github.com/sirupsen/logrus"
+	"github.com/williballenthin/govt"
 )
 
 type Scraper struct {
@@ -15,6 +16,7 @@ type Scraper struct {
 	maxQueue       int
 	logger         *log.Logger
 	seenKeys       *keyQueue
+	vtClient       *govt.Client
 }
 
 type Elastic struct {
@@ -28,6 +30,7 @@ type Elastic struct {
 
 type config struct {
 	OutputDir    string   `yaml:"outputdir"`
+	VTKey        string   `yaml:"vtkey"`
 	Debug        bool     `yaml:"debug"`
 	MaxQueueSize int      `yaml:"maxqueuesize"`
 	Elastic      Elastic  `yaml:"elastic"`

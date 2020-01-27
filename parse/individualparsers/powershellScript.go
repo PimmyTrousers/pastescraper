@@ -15,6 +15,6 @@ func (b PowershellScript) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b PowershellScript) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b PowershellScript) Normalize(content []byte) (int, []byte, error) {
+	return KeyNonActionable, content, nil
 }

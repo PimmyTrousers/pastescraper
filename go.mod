@@ -7,6 +7,7 @@ require (
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/olivere/elastic/v7 v7.0.4
 	github.com/sirupsen/logrus v1.4.2
+	github.com/williballenthin/govt v0.0.0-20190415151500-3ca547fdfb87
 	golang.org/x/sys v0.0.0-20191228213918-04cbcbbfeed8 // indirect
 	gopkg.in/sohlich/elogrus.v7 v7.0.0
 	gopkg.in/yaml.v2 v2.2.2

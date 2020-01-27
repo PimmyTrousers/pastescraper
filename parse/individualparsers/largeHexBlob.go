@@ -17,6 +17,6 @@ func (b LargeHexBlob) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b LargeHexBlob) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b LargeHexBlob) Normalize(content []byte) (int, []byte, error) {
+	return KeyNonActionable, content, nil
 }
