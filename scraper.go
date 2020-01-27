@@ -347,7 +347,7 @@ func (s *Scraper) postActionExec(action int, content []byte) (string, error) {
 		}
 
 		// add a timestamp to deal with any collisions
-		filename.WriteString("_" + time.Now().String())
+		filename.WriteString("_" + string(time.Now().Unix()))
 
 		s.logger.WithFields(log.Fields{
 			"filename":     filename.String(),
