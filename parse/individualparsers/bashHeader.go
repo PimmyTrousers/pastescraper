@@ -1,6 +1,8 @@
 package individualparsers
 
-import "strings"
+import (
+	"strings"
+)
 
 type BashHeader struct{}
 
@@ -17,6 +19,10 @@ func (b BashHeader) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b BashHeader) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b BashHeader) PostAction(content []byte) (string, error) {
+	return "", nil
+}
+
+func (b BashHeader) Normalize(content []byte) (int, []byte, error) {
+	return KeyNonActionable, content, nil
 }

@@ -1,6 +1,8 @@
 package individualparsers
 
-import "bytes"
+import (
+	"bytes"
+)
 
 type RawMachOHeader struct{}
 
@@ -17,6 +19,6 @@ func (b RawMachOHeader) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b RawMachOHeader) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b RawMachOHeader) Normalize(content []byte) (int, []byte, error) {
+	return KeyRawExecutable, content, nil
 }

@@ -15,6 +15,6 @@ func (b PowershellFromBase64) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b PowershellFromBase64) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b PowershellFromBase64) Normalize(content []byte) (int, []byte, error) {
+	return KeyNonActionable, content, nil
 }

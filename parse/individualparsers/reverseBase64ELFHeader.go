@@ -1,6 +1,8 @@
 package individualparsers
 
-import "encoding/base64"
+import (
+	"encoding/base64"
+)
 
 type ReverseBase64ELFHeader struct{}
 
@@ -18,7 +20,12 @@ func (b ReverseBase64ELFHeader) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b ReverseBase64ELFHeader) Normalize(content []byte) ([]byte, error) {
+func (b ReverseBase64ELFHeader) Normalize(content []byte) (int, []byte, error) {
 	reversedContent := reverse(string(content))
-	return base64.StdEncoding.DecodeString(reversedContent)
+	content, err := base64.StdEncoding.DecodeString(reversedContent)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return KeyRawExecutable, content, err
 }

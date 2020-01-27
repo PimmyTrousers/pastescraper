@@ -15,6 +15,6 @@ func (b PowershellInvokeExpression) Match(content []byte) (bool, error) {
 	return false, nil
 }
 
-func (b PowershellInvokeExpression) Normalize(content []byte) ([]byte, error) {
-	return content, nil
+func (b PowershellInvokeExpression) Normalize(content []byte) (int, []byte, error) {
+	return KeyNonActionable, content, nil
 }
