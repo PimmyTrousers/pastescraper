@@ -244,6 +244,14 @@ func (s *Scraper) start(ctx context.Context, waitDuration time.Duration) error {
 					}).Info("matched a paste")
 
 					filename, err := s.postActionExec(action, normalizedContent)
+					if err != nil {
+						s.logger.WithFields(log.Fields{
+							"full-url": metadata.FullURL,
+							"key":      pasteKey,
+							"error":    err,
+						}).Warning("unable to execute post actions, using key as filename")
+						filename = pasteKey
+					}
 
 					// if a new filename was passed by a post action, then use that otherwise stick to the paste key
 					if filename == "" {
