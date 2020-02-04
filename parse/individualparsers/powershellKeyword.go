@@ -8,7 +8,9 @@ type PowershellKeyword struct{}
 
 func (b PowershellKeyword) Match(content []byte) (bool, error) {
 	// powershell contained within paste
-	if strings.Contains(strings.ToLower(string(content)), "powershell") {
+	lowerContent := strings.ToLower(string(content))
+	normalContent := strings.Replace(lowerContent, "^", "", -1)
+	if strings.Contains(normalContent, "powershell") {
 		return true, nil
 	}
 

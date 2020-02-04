@@ -8,7 +8,9 @@ type PowershellScript struct{}
 
 func (b PowershellScript) Match(content []byte) (bool, error) {
 	// powershell invocation
-	if strings.Contains(strings.ToLower(string(content)), "invoke-") {
+	lowerContent := strings.ToLower(string(content))
+	normalContent := strings.Replace(lowerContent, "^", "", -1)
+	if strings.Contains(normalContent, "invoke-") {
 		return true, nil
 	}
 

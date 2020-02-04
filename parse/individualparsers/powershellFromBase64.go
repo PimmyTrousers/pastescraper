@@ -8,7 +8,9 @@ type PowershellFromBase64 struct{}
 
 func (b PowershellFromBase64) Match(content []byte) (bool, error) {
 	// powershell contained within paste
-	if strings.Contains(strings.ToLower(string(content)), "frombase64string") {
+	lowerContent := strings.ToLower(string(content))
+	normalContent := strings.Replace(lowerContent, "^", "", -1)
+	if strings.Contains(normalContent, "frombase64string") {
 		return true, nil
 	}
 

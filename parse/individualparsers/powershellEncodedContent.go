@@ -8,9 +8,11 @@ type PowershellEncodedContent struct{}
 
 func (b PowershellEncodedContent) Match(content []byte) (bool, error) {
 	// powershell.exe -nop -wind hidden -Exec Bypass -noni -enc
-	if strings.Contains(strings.ToLower(string(content)), "-nop") &&
-		strings.Contains(strings.ToLower(string(content)), "-exec bypass") &&
-		strings.Contains(strings.ToLower(string(content)), "-enc") {
+	lowerContent := strings.ToLower(string(content))
+	normalContent := strings.Replace(lowerContent, "^", "", -1)
+	if strings.Contains(normalContent, "-nop") &&
+		strings.Contains(normalContent, "-exec bypass") &&
+		strings.Contains(normalContent, "-enc") {
 		return true, nil
 	}
 

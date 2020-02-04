@@ -8,7 +8,9 @@ type PowershellWebClient struct{}
 
 func (b PowershellWebClient) Match(content []byte) (bool, error) {
 	// powershell well client
-	if strings.Contains(strings.ToLower(string(content)), "net.webclient") {
+	lowerContent := strings.ToLower(string(content))
+	normalContent := strings.Replace(lowerContent, "^", "", -1)
+	if strings.Contains(normalContent, "net.webclient") {
 		return true, nil
 	}
 
